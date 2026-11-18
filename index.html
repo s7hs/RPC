@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pen</title>
+  </head>
+  <body>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
+<div class="hero">
+  <h1>CETM</h1>
+  <p id="typing"></p>
+  <button>Bắt đầu</button>
+  <div class="timer">⏱ Bạn đã ở đây: <b id="time">00:00</b></div>
+
+  <div class="cards">
+    <div class="card"><h3>🎧 Voice 24/7</h3><span>Luôn online, không ngắt quãng</span></div>
+    <div class="card"><h3>🎮 Rich Presence</h3><span>Trạng thái đẹp, tuỳ chỉnh thoải mái</span></div>
+    <div class="card"><h3>📱 Dùng trên điện thoại</h3><span>Mở trình duyệt là dùng được</span></div>
+  </div>
+</div>
+
+<style>
+  body { margin: 0; background: #0d0d12; color: #fff; font-family: sans-serif; }
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; padding: 20px;
+    background: radial-gradient(circle at 50% 0%, #2a2d6b 0%, transparent 60%);
+  }
+  h1 { font-size: 2.2rem; margin: 0 0 10px; text-shadow: 0 0 20px #5865f2; }
+  p { color: #9a9aa8; margin: 0 0 24px; min-height: 1.4em; }
+  button {
+    background: #5865f2; color: #fff; border: 0; padding: 14px 32px;
+    border-radius: 12px; font-size: 1rem; box-shadow: 0 0 20px #5865f2aa;
+    transition: transform 0.2s;
+  }
+  button:active { transform: scale(0.95); }
+  .timer { margin-top: 18px; color: #9a9aa8; font-size: 0.9rem; }
+  .timer b { color: #fff; }
+
+  .cards { margin-top: 30px; display: grid; gap: 14px; width: 100%; max-width: 420px; }
+  .card {
+    background: #16161f; border: 1px solid #2a2a3a; border-radius: 16px;
+    padding: 18px; opacity: 0; transform: translateY(20px);
+    animation: hien 0.6s forwards;
+  }
+  .card:nth-child(2) { animation-delay: 0.2s; }
+  .card:nth-child(3) { animation-delay: 0.4s; }
+  .card h3 { margin: 0 0 6px; }
+  .card span { color: #9a9aa8; font-size: 0.9rem; }
+
+  @keyframes hien { to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<script>
+  // 1. Chữ tự gõ
+  const cau = ["Treo voice 24/7", "Rich Presence mượt mà", "Đơn giản, dễ dùng"];
+  let c = 0, k = 0, xoa = false;
+  const o = document.getElementById("typing");
+
+  function go() {
+    const chu = cau[c];
+    o.textContent = chu.slice(0, k) + "|";
+    if (!xoa) { k++; if (k > chu.length) { xoa = true; setTimeout(go, 1200); return; } }
+    else { k--; if (k < 0) { xoa = false; k = 0; c = (c + 1) % cau.length; } }
+    setTimeout(go, xoa ? 40 : 90);
+  }
+  go();
+
+  // 2. Đồng hồ đếm thời gian
+  let giay = 0;
+  setInterval(() => {
+    giay++;
+    const p = String(Math.floor(giay / 60)).padStart(2, "0");
+    const s = String(giay % 60).padStart(2, "0");
+    document.getElementById("time").textContent = p + ":" + s;
+  }, 1000);
+</script>
