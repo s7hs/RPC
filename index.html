@@ -6,6 +6,32 @@
 <title>CETM</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
+  :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
+
+/* Nút: co nhẹ khi chạm */
+.btn, .acc, .icon-btn {
+  transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+}
+.btn:active, .acc:active, .icon-btn:active { transform: scale(0.97); }
+
+/* Thanh trên và các thẻ hiện dần, lần lượt */
+@keyframes vao {
+  from { opacity: 0; transform: translateY(12px); }
+}
+.wrap > * { animation: vao 500ms var(--ease-out) both; }
+.wrap > :nth-child(2) { animation-delay: 70ms; }
+.wrap > :nth-child(3) { animation-delay: 140ms; }
+
+/* 3 dòng tick xanh hiện lần lượt */
+.checks li { animation: vao 400ms var(--ease-out) both; }
+.checks li:nth-child(1) { animation-delay: 250ms; }
+.checks li:nth-child(2) { animation-delay: 320ms; }
+.checks li:nth-child(3) { animation-delay: 390ms; }
+
+/* Ai bật "giảm chuyển động" thì tắt hết */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+}
 :root{
   --bg:#070b1a; --card:#0b1630cc; --line:#1c3a5c;
   --text:#fff; --muted:#9fb0c8;
