@@ -1,77 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="./style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pen</title>
-  </head>
-  <body>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CETM</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070b1a; --card:#0b1630cc; --line:#1c3a5c;
+  --text:#fff; --muted:#9fb0c8;
+  --c1:#00d9f5; --c2:#4f9dff; --ok:#19d38a;
+  --glow:#0b3a5c;
+}
+:root[data-theme="light"]{
+  --bg:#eef3fb; --card:#ffffffcc; --line:#c9d8ee;
+  --text:#0b1630; --muted:#4a5d7a; --glow:#cfe6ff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; padding:14px 14px 40px;
+  background:var(--bg); color:var(--text);
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  background-image:radial-gradient(circle at 50% -10%,var(--glow) 0%,transparent 55%);
+  background-attachment:fixed;
+}
+.stars{
+  position:fixed; inset:0; pointer-events:none;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%,#fff9,transparent),
+    radial-gradient(1px 1px at 70% 20%,#fff9,transparent),
+    radial-gradient(1.5px 1.5px at 40% 70%,#7fd9ffaa,transparent),
+    radial-gradient(1px 1px at 85% 60%,#fff9,transparent),
+    radial-gradient(1.5px 1.5px at 10% 85%,#fff9,transparent);
+  animation:tw 4s ease-in-out infinite alternate;
+}
+:root[data-theme="light"] .stars{display:none}
+@keyframes tw{from{opacity:.3}to{opacity:1}}
+.wrap{position:relative; z-index:1; max-width:480px; margin:0 auto}
 
-    <script src="./script.js"></script>
-  </body>
-</html>
-<div class="hero">
-  <h1>CETM</h1>
-  <p id="typing"></p>
-  <button>Bắt đầu</button>
-  <div class="timer">⏱ Bạn đã ở đây: <b id="time">00:00</b></div>
+/* Thanh trên cùng */
+.nav{
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; border-radius:24px;
+  background:var(--card); border:1px solid var(--line);
+  backdrop-filter:blur(10px);
+}
+.logo{
+  width:44px; height:44px; border-radius:50%; flex:none;
+  background:linear-gradient(135deg,var(--c1),var(--c2));
+  display:grid; place-items:center; font-weight:800; color:#04111f;
+}
+.name{
+  font-weight:800; font-size:1.05rem; flex:1;
+  background:linear-gradient(90deg,var(--c1),var(--c2));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.icon-btn{
+  width:42px; height:42px; border-radius:14px; flex:none;
+  background:transparent; border:1px solid var(--line);
+  color:var(--text); font-size:1.1rem;
+}
+.acc{
+  padding:0 16px; height:42px; border:0; border-radius:14px;
+  background:linear-gradient(90deg,var(--c1),var(--c2));
+  color:#04111f; font-weight:800; font-family:inherit;
+}
 
-  <div class="cards">
-    <div class="card"><h3>🎧 Voice 24/7</h3><span>Luôn online, không ngắt quãng</span></div>
-    <div class="card"><h3>🎮 Rich Presence</h3><span>Trạng thái đẹp, tuỳ chỉnh thoải mái</span></div>
-    <div class="card"><h3>📱 Dùng trên điện thoại</h3><span>Mở trình duyệt là dùng được</span></div>
+/* Thẻ chính */
+.card{
+  margin-top:18px; padding:22px; border-radius:28px;
+  background:var(--card); border:1px solid var(--line);
+  box-shadow:0 0 40px #00d9f522;
+  backdrop-filter:blur(10px);
+}
+.badge{
+  display:inline-block; padding:8px 14px; border-radius:999px;
+  border:1px solid var(--c2); color:var(--c1);
+  font-size:.8rem; font-weight:600;
+}
+h1{font-size:2.1rem; line-height:1.15; margin:18px 0 12px; font-weight:800}
+.card p{color:var(--muted); line-height:1.6; margin:0 0 22px}
+.btn{
+  display:block; width:100%; padding:16px; border-radius:18px;
+  font-size:1rem; font-weight:800; font-family:inherit; margin-bottom:12px;
+}
+.btn-main{
+  border:0; color:#04111f;
+  background:linear-gradient(90deg,var(--c1),var(--c2));
+  box-shadow:0 0 28px #00d9f566;
+  transition:transform .2s;
+}
+.btn-main:active{transform:scale(.97)}
+.btn-sub{background:transparent; border:1px solid var(--line); color:var(--text)}
+.checks{list-style:none; padding:16px 0 0; margin:8px 0 0; border-top:1px solid var(--line)}
+.checks li{display:flex; align-items:center; gap:12px; padding:8px 0; font-weight:600}
+.checks i{
+  width:22px; height:22px; border-radius:50%; flex:none;
+  border:2px solid var(--ok); color:var(--ok);
+  display:grid; place-items:center; font-style:normal; font-size:.7rem;
+}
+
+/* Thẻ thống kê */
+.stat small{letter-spacing:.08em; color:var(--muted); font-weight:800}
+.stat .num{font-size:3rem; font-weight:800; margin-top:8px}
+.stat .live{color:var(--ok); font-size:.9rem; font-weight:800; margin-left:8px}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="wrap">
+
+  <div class="nav">
+    <div class="logo">D</div>
+    <div class="name">CETM</div>
+    <button class="icon-btn" id="theme">☀️</button>
+    <button class="acc">Tài Khoản</button>
+    <button class="icon-btn">☰</button>
   </div>
+
+  <div class="card">
+    <span class="badge">✦ Cổng kết nối Discord • TênCủaCon</span>
+    <h1>Treo Phòng Thoại & Tùy Biến Trạng Thái</h1>
+    <p>Giữ bot của bạn luôn ở trong kênh voice, tự vào lại khi bị rớt. Giao diện đơn giản, dùng mượt ngay cả trên 1 con điện thoại.</p>
+    <button class="btn btn-main">📡 Bắt Đầu Treo Voice →</button>
+    <button class="btn btn-sub">〰 Cài Đặt Rich Presence</button>
+    <ul class="checks">
+      <li><i>✔</i> Bot chính chủ, an toàn</li>
+      <li><i>✔</i> Tự động vào lại khi mất kết nối</li>
+      <li><i>✔</i> Token được giấu kín, bảo mật tuyệt đối</li>
+    </ul>
+  </div>
+
+  <div class="card stat">
+    <small>THỜI GIAN BẠN Ở ĐÂY</small>
+    <div class="num"><span id="time">00:00</span><span class="live">● ĐANG XEM</span></div>
+  </div>
+
 </div>
 
-<style>
-  body { margin: 0; background: #0d0d12; color: #fff; font-family: sans-serif; }
-  .hero {
-    min-height: 100vh; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; text-align: center; padding: 20px;
-    background: radial-gradient(circle at 50% 0%, #2a2d6b 0%, transparent 60%);
-  }
-  h1 { font-size: 2.2rem; margin: 0 0 10px; text-shadow: 0 0 20px #5865f2; }
-  p { color: #9a9aa8; margin: 0 0 24px; min-height: 1.4em; }
-  button {
-    background: #5865f2; color: #fff; border: 0; padding: 14px 32px;
-    border-radius: 12px; font-size: 1rem; box-shadow: 0 0 20px #5865f2aa;
-    transition: transform 0.2s;
-  }
-  button:active { transform: scale(0.95); }
-  .timer { margin-top: 18px; color: #9a9aa8; font-size: 0.9rem; }
-  .timer b { color: #fff; }
-
-  .cards { margin-top: 30px; display: grid; gap: 14px; width: 100%; max-width: 420px; }
-  .card {
-    background: #16161f; border: 1px solid #2a2a3a; border-radius: 16px;
-    padding: 18px; opacity: 0; transform: translateY(20px);
-    animation: hien 0.6s forwards;
-  }
-  .card:nth-child(2) { animation-delay: 0.2s; }
-  .card:nth-child(3) { animation-delay: 0.4s; }
-  .card h3 { margin: 0 0 6px; }
-  .card span { color: #9a9aa8; font-size: 0.9rem; }
-
-  @keyframes hien { to { opacity: 1; transform: translateY(0); } }
-</style>
-
 <script>
-  // 1. Chữ tự gõ
-  const cau = ["Treo voice 24/7", "Rich Presence mượt mà", "Đơn giản, dễ dùng"];
-  let c = 0, k = 0, xoa = false;
-  const o = document.getElementById("typing");
+  // Đổi sáng/tối
+  const btn = document.getElementById("theme");
+  btn.onclick = () => {
+    const root = document.documentElement;
+    const sang = root.getAttribute("data-theme") === "light";
+    root.setAttribute("data-theme", sang ? "dark" : "light");
+    btn.textContent = sang ? "☀️" : "🌙";
+  };
 
-  function go() {
-    const chu = cau[c];
-    o.textContent = chu.slice(0, k) + "|";
-    if (!xoa) { k++; if (k > chu.length) { xoa = true; setTimeout(go, 1200); return; } }
-    else { k--; if (k < 0) { xoa = false; k = 0; c = (c + 1) % cau.length; } }
-    setTimeout(go, xoa ? 40 : 90);
-  }
-  go();
-
-  // 2. Đồng hồ đếm thời gian
+  // Đồng hồ
   let giay = 0;
   setInterval(() => {
     giay++;
@@ -80,3 +157,5 @@
     document.getElementById("time").textContent = p + ":" + s;
   }, 1000);
 </script>
+</body>
+</html>
