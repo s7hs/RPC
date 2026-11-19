@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tài khoản</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04060f; --card:#0a1020cc; --line:#1b2a4a; --text:#fff; --muted:#8fa0bd;
+  --blue:#2f6bff; --blue2:#4aa3ff; --err:#ff5d73; --ok:#19d38a;
+  --ease:cubic-bezier(0.23,1,0.32,1);
+}
+*{box-sizing:border-box}
+html{height:100%}
+body{
+  margin:0; min-height:100%; color:var(--text); background:var(--bg);
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  display:grid; place-items:center; padding:72px 16px 32px; overflow-x:hidden;
+}
+/* Nền: hai vệt sáng xanh trôi chậm */
+.glow{position:fixed; inset:0; pointer-events:none; overflow:hidden}
+.glow::before,.glow::after{
+  content:""; position:absolute; top:-10%; height:120%; width:70%;
+  background:linear-gradient(90deg,transparent,#2f6bff55,transparent);
+  animation:troi 9s ease-in-out infinite alternate;
+}
+.glow::before{left:-10%}
+.glow::after{right:-20%; animation-duration:12s; animation-direction:alternate-reverse; opacity:.7}
+@keyframes troi{from{transform:translateX(-12%)}to{transform:translateX(18%)}}
+
+.back{
+  position:fixed; top:16px; left:16px; z-index:2; color:var(--muted);
+  text-decoration:none; font-weight:600; font-size:.9rem;
+  padding:10px 14px; border:1px solid var(--line); border-radius:14px;
+  background:var(--card); transition:transform 160ms var(--ease);
+}
+.back:active{transform:scale(.97)}
+
+.panel{
+  position:relative; z-index:1; width:100%; max-width:420px;
+  padding:26px 22px; border-radius:28px;
+  background:var(--card); border:1px solid var(--line);
+  box-shadow:0 0 60px #2f6bff22; backdrop-filter:blur(12px);
+}
+.view{display:none}
+.view.active{display:block}
+.view.active>*{animation:vao 420ms var(--ease) both; animation-delay:calc(var(--i,0)*45ms)}
+@keyframes vao{from{opacity:0; transform:translateY(12px)}}
+
+h1{margin:6px 0 6px; text-align:center; font-size:2rem; font-weight:800;
+  background:linear-gradient(90deg,#fff,#9cc4ff); -webkit-background-clip:text; background-clip:text; color:transparent}
+.sub{margin:0 0 22px; text-align:center; color:var(--muted)}
+
+.social{
+  width:100%; display:flex; align-items:center; justify-content:center; gap:12px;
+  padding:15px; margin-bottom:10px; border-radius:16px; font:inherit;
+  font-weight:800; letter-spacing:.08em; font-size:.8rem; color:#fff; cursor:pointer;
+  transition:transform 160ms var(--ease), box-shadow 160ms var(--ease);
+}
+.social:active{transform:scale(.97)}
+.discord{border:0; background:linear-gradient(90deg,var(--blue),var(--blue2)); box-shadow:0 0 26px #2f6bff55}
+.google{border:1px solid var(--line); background:#0d1426}
+.ico{font-size:1.1rem}
+.g{font-weight:800; background:linear-gradient(90deg,#4285f4,#ea4335,#fbbc05,#34a853);
+  -webkit-background-clip:text; background-clip:text; color:transparent}
+
+.or{display:flex; align-items:center; gap:12px; margin:16px 0; color:var(--muted); font-size:.75rem; letter-spacing:.2em; font-weight:800}
+.or::before,.or::after{content:""; flex:1; height:1px; background:var(--line)}
+
+.field{margin-bottom:14px}
+label{display:block; margin:0 0 8px 4px; color:var(--muted); font-size:.72rem; letter-spacing:.16em; font-weight:800}
+.box{position:relative; display:flex; align-items:center}
+input{
+  width:100%; padding:16px 18px; border-radius:16px; font:inherit; color:#fff;
+  background:#070c1a; border:1px solid var(--line); outline:none;
+  transition:border-color 160ms var(--ease), box-shadow 160ms var(--ease);
+}
+input::placeholder{color:#4d5d7c}
+input:focus{border-color:var(--blue2); box-shadow:0 0 0 4px #2f6bff2e}
+.field.bad input{border-color:var(--err)}
+.field.bad .box{animation:lac 320ms var(--ease)}
+@keyframes lac{25%{transform:translateX(-6px)}60%{transform:translateX(5px)}}
+.err{min-height:0; margin:6px 4px 0; color:var(--err); font-size:.8rem; font-weight:600}
+.prefix{position:absolute; left:18px; color:#4d5d7c; pointer-events:none}
+.has-prefix input{padding-left:calc(18px + var(--pw,70px))}
+.eye{
+  position:absolute; right:8px; padding:8px 12px; border:0; border-radius:12px;
+  background:#101a33; color:var(--muted); font:inherit; font-size:.78rem; font-weight:800; cursor:pointer;
+  transition:transform 160ms var(--ease);
+}
+.eye:active{transform:scale(.95)}
+.has-eye input{padding-right:70px}
+
+.meter{display:flex; gap:6px; margin:10px 4px 0}
+.meter i{flex:1; height:4px; border-radius:4px; background:#14203d; transition:background 200ms var(--ease)}
+.hint{margin:6px 4px 0; font-size:.78rem; color:var(--muted)}
+
+.go{
+  position:relative; width:100%; margin-top:6px; padding:16px; border:0; border-radius:16px;
+  font:inherit; font-weight:800; letter-spacing:.1em; font-size:.85rem; color:#fff; cursor:pointer;
+  background:linear-gradient(90deg,var(--blue),var(--blue2)); box-shadow:0 0 26px #2f6bff55;
+  transition:transform 160ms var(--ease), opacity 160ms var(--ease);
+}
+.go:active{transform:scale(.97)}
+.go.loading{pointer-events:none; opacity:.8; color:transparent}
+.go.loading::after{
+  content:""; position:absolute; inset:0; margin:auto; width:20px; height:20px;
+  border:3px solid #fff5; border-top-color:#fff; border-radius:50%; animation:quay 700ms linear infinite;
+}
+@keyframes quay{to{transform:rotate(360deg)}}
+
+.switch{margin:18px 0 0; text-align:center; color:var(--muted)}
+.switch a{color:var(--blue2); font-weight:800; text-decoration:none}
+
+.toast{
+  position:fixed; left:50%; bottom:24px; z-index:5; width:max-content; max-width:92%;
+  padding:14px 18px; border-radius:16px; background:#0f1a33; border:1px solid var(--line);
+  color:#fff; font-weight:600; font-size:.9rem; text-align:center;
+  opacity:0; transform:translate(-50%,16px); pointer-events:none;
+  transition:opacity 220ms var(--ease), transform 220ms var(--ease);
+}
+.toast.show{opacity:1; transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:1ms !important; transition-duration:1ms !important}
+}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<a class="back" href="./index.html">← Trang chủ</a>
+
+<main class="panel">
+
+  <!-- KHUNG ĐĂNG NHẬP -->
+  <section class="view" id="login">
+    <h1 style="--i:0">Chào mừng trở lại</h1>
+    <p class="sub" style="--i:1">Đăng nhập vào tài khoản của bạn</p>
+    <button class="social discord" style="--i:2" data-social><span class="ico">💬</span> TIẾP TỤC VỚI DISCORD</button>
+    <button class="social google" style="--i:3" data-social><span class="ico g">G</span> TIẾP TỤC VỚI GOOGLE</button>
+    <div class="or" style="--i:4">HOẶC</div>
+    <form novalidate data-form="login">
+      <div class="field" style="--i:5">
+        <label for="l-email">ĐỊA CHỈ EMAIL</label>
+        <div class="box"><input id="l-email" name="email" type="email" placeholder="ban@email.com" autocomplete="email"></div>
+        <div class="err" aria-live="polite"></div>
+      </div>
+      <div class="field has-eye" style="--i:6">
+        <label for="l-pass">MẬT KHẨU</label>
+        <div class="box"><input id="l-pass" name="pass" type="password" placeholder="Mật khẩu" autocomplete="current-password">
+          <button type="button" class="eye" data-eye>Hiện</button></div>
+        <div class="err" aria-live="polite"></div>
+      </div>
+      <button class="go" style="--i:7" type="submit">ĐĂNG NHẬP</button>
+    </form>
+    <p class="switch" style="--i:8">Chưa có tài khoản? <a href="#register">Đăng ký miễn phí</a></p>
+  </section>
+
+  <!-- KHUNG ĐĂNG KÝ -->
+  <section class="view" id="register">
+    <h1 style="--i:0">Tạo tài khoản</h1>
+    <p class="sub" style="--i:1">Bắt đầu hành trình của bạn</p>
+    <button class="social discord" style="--i:2" data-social><span class="ico">💬</span> TIẾP TỤC VỚI DISCORD</button>
+    <button class="social google" style="--i:3" data-social><span class="ico g">G</span> TIẾP TỤC VỚI GOOGLE</button>
+    <div class="or" style="--i:4">HOẶC</div>
+    <form novalidate data-form="register">
+      <div class="field" style="--i:5">
+        <label for="r-email">ĐỊA CHỈ EMAIL</label>
+        <div class="box"><input id="r-email" name="email" type="email" placeholder="ban@email.com" autocomplete="email"></div>
+        <div class="err" aria-live="polite"></div>
+      </div>
+      <div class="field has-eye" style="--i:6">
+        <label for="r-pass">MẬT KHẨU</label>
+        <div class="box"><input id="r-pass" name="pass" type="password" placeholder="Tối thiểu 8 ký tự" autocomplete="new-password">
+          <button type="button" class="eye" data-eye>Hiện</button></div>
+        <div class="meter" id="meter"><i></i><i></i><i></i><i></i></div>
+        <div class="hint" id="hint">Dùng chữ hoa, chữ thường, số và ký hiệu</div>
+        <div class="err" aria-live="polite"></div>
+      </div>
+      <div class="field has-prefix" style="--i:7">
+        <label for="r-user">TÊN NGƯỜI DÙNG</label>
+        <div class="box"><span class="prefix" id="prefix">tên-web/</span>
+          <input id="r-user" name="user" type="text" placeholder="tên-của-bạn" autocomplete="username" autocapitalize="none"></div>
+        <div class="err" aria-live="polite"></div>
+      </div>
+      <button class="go" style="--i:8" type="submit">TẠO TÀI KHOẢN</button>
+    </form>
+    <p class="switch" style="--i:9">Đã có tài khoản? <a href="#login">Đăng nhập</a></p>
+  </section>
+
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+// Chuyển qua lại giữa 2 khung bằng #login / #register
+function show(name) {
+  if (name !== "register") name = "login";
+  $$(".view").forEach(v => v.classList.toggle("active", v.id === name));
+  document.title = name === "login" ? "Đăng nhập" : "Đăng ký";
+  window.scrollTo(0, 0);
+}
+addEventListener("hashchange", () => show(location.hash.slice(1)));
+show(location.hash.slice(1));
+
+// Thông báo nhỏ
+let tt;
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(tt);
+  tt = setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+// Nút Discord / Google (chưa nối máy chủ)
+$$("[data-social]").forEach(b => b.addEventListener("click", () =>
+  toast("Sắp có: cần nối máy chủ ở Chặng 2")));
+
+// Hiện / ẩn mật khẩu
+$$("[data-eye]").forEach(b => b.addEventListener("click", () => {
+  const inp = b.parentElement.querySelector("input");
+  const an = inp.type === "password";
+  inp.type = an ? "text" : "password";
+  b.textContent = an ? "Ẩn" : "Hiện";
+}));
+
+// Tên người dùng: tự viết thường, bỏ ký tự lạ
+const user = $("#r-user");
+user.addEventListener("input", () => {
+  user.value = user.value.toLowerCase().replace(/[^a-z0-9_]/g, "");
+});
+// Đo độ rộng chữ tiền tố để ô nhập không đè lên
+const prefix = $("#prefix");
+user.style.setProperty("--pw", prefix.offsetWidth + "px");
+document.fonts.ready.then(() => user.style.setProperty("--pw", prefix.offsetWidth + "px"));
+
+// Thanh đo độ mạnh mật khẩu
+const meter = $$("#meter i");
+const hint = $("#hint");
+const cols = ["#ff5d73", "#ff9f43", "#f1c40f", "#19d38a"];
+const words = ["Quá yếu", "Yếu", "Khá ổn", "Mạnh"];
+$("#r-pass").addEventListener("input", e => {
+  const v = e.target.value;
+  let sc = 0;
+  if (v.length >= 8) sc++;
+  if (/[a-z]/.test(v) && /[A-Z]/.test(v)) sc++;
+  if (/\d/.test(v)) sc++;
+  if (/[^A-Za-z0-9]/.test(v) || v.length >= 14) sc++;
+  meter.forEach((m, i) => m.style.background = i < sc ? cols[sc - 1] : "");
+  hint.textContent = v ? words[Math.max(sc - 1, 0)] : "Dùng chữ hoa, chữ thường, số và ký hiệu";
+});
+
+// Kiểm tra dữ liệu nhập
+const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+function loi(input, msg) {
+  const f = input.closest(".field");
+  f.classList.toggle("bad", !!msg);
+  f.querySelector(".err").textContent = msg || "";
+  if (msg) { f.classList.remove("bad"); void f.offsetWidth; f.classList.add("bad"); }
+  return !msg;
+}
+
+$$("form").forEach(form => {
+  form.addEventListener("input", e => {
+    if (e.target.closest(".field")?.classList.contains("bad")) loi(e.target, "");
+  });
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const f = form.elements;
+    let ok = true, dau = null;
+    const kt = (inp, msg) => { if (!loi(inp, msg)) { ok = false; dau = dau || inp; } };
+
+    kt(f.email, emailOk(f.email.value.trim()) ? "" : "Email chưa đúng định dạng");
+    if (form.dataset.form === "login") {
+      kt(f.pass, f.pass.value ? "" : "Hãy nhập mật khẩu");
+    } else {
+      kt(f.pass, f.pass.value.length >= 8 ? "" : "Mật khẩu cần ít nhất 8 ký tự");
+      kt(f.user, /^[a-z0-9_]{3,20}$/.test(f.user.value) ? "" : "Tên từ 3 đến 20 ký tự: chữ, số, dấu _");
+    }
+    if (!ok) { dau.focus(); return; }
+
+    // Giả lập đang xử lý (CHƯA gửi dữ liệu đi đâu cả)
+    const nut = $(".go", form);
+    nut.classList.add("loading");
+    setTimeout(() => {
+      nut.classList.remove("loading");
+      toast("Đây là giao diện mẫu, chưa lưu gì cả");
+      form.reset();
+      meter.forEach(m => m.style.background = "");
+    }, 1000);
+  });
+});
+</script>
+</body>
+</html>
